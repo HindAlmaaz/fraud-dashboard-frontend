@@ -348,3 +348,125 @@ select {
   box-shadow: 0 4px 10px rgba(55, 65, 81, 0.25);
   transform: translateY(-1px);
 }
+
+/* ---------- RESPONSIVE LAYOUT ---------- */
+
+/* Tablet & small screens */
+@media (max-width: 768px) {
+  .app-root {
+    padding: 12px 8px;
+  }
+
+  .app-header {
+    padding: 16px 0;
+    text-align: center;
+  }
+
+  .app-title {
+    font-size: 1.4rem;
+  }
+
+  .app-subtitle {
+    font-size: 0.85rem;
+  }
+
+  /* Filters screen */
+  .app-main.single {
+    padding: 0 8px 24px;
+    justify-content: flex-start;
+  }
+
+  .panel {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  .panel-filters {
+    margin: 0 auto;
+  }
+
+  /* Dashboard screen */
+  .app-main-results {
+    padding: 0 8px 24px;
+  }
+
+  .panel-dashboard {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Header row on results screen */
+  .results-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .selection-summary {
+    width: 100%;
+  }
+
+  .topcases-btn {
+    align-self: flex-start;
+  }
+
+  /* Metric cards: 2 per row on tablet */
+  .metrics-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  /* Charts: stack vertically */
+  .charts-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  /* Bottom buttons: stack, full width */
+  .bottom-actions {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .export-button,
+  .back-button {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Top cases table: make it scroll horizontally if needed */
+  .cases-table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .cases-table {
+    min-width: 700px; /* keeps columns readable, scrolls on small screens */
+  }
+}
+
+/* Very small phones */
+@media (max-width: 480px) {
+  .metrics-grid {
+    grid-template-columns: 1fr; /* 1 card per row */
+  }
+
+  .chart-card {
+    padding: 12px;
+  }
+
+  .chart-title {
+    font-size: 0.9rem;
+  }
+
+  .topcases-btn {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+}
+
