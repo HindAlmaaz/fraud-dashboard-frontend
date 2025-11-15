@@ -1,8 +1,9 @@
 // src/fraudApi.js
 
-// ✨ Hard-code your backend URL for now
-// If your backend is on Render, put that URL here instead.
-const API_BASE_URL = "https://fraud-backend-pxg9.onrender.com";  // <--- important
+
+ const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "https://fraud-backend-pxg9.onrender.com";
+
 
 async function getJson(url) {
   const res = await fetch(url);
@@ -13,36 +14,49 @@ async function getJson(url) {
   return res.json();
 }
 
+// ---------------- Hospitals & Years ----------------
+
 export async function getHospitals() {
-  const url = `${API_BASE_URL}/api/hospitals`;
-  const data = await getJson(url);
-
-  if (!data || !Array.isArray(data.hospitals)) {
-    throw new Error("Invalid hospitals response from backend");
-  }
-
-  return data.hospitals;
+  const data = await getJson(`${API_BASE_URL}/api/hospitals`);
+  // backend returns: { hospitals: [ {id, name, label}, ... ] }
+  return data.hospitals || [];
 }
 
 export async function getYears() {
-  const url = `${API_BASE_URL}/api/years`;
-  const data = await getJson(url);
-
-  if (!data || !Array.isArray(data.years)) {
-    throw new Error("Invalid years response from backend");
-  }
-
-  return data.years;
+  const data = await getJson(`${API_BASE_URL}/api/years`);
+  // backend returns: { years: [2021, 2022, ...] }
+  return data.years || [];
 }
 
-export async function runFraudCheck({ hospitalId, year, quarter }) {
-  const params = new URLSearchParams();
-  params.set("hospital_id", hospitalId);
-  params.set("year", String(year));
-  if (quarter) params.set("quarter", String(quarter));
+// ---------------- Fraud report ----------------
 
-  const url = `${API_BASE_URL}/api/fraud-report?${params.toString()}`;
-  const data = await getJson(url);
+export async function runFraudCheck({ hospitalId, year, quarter }) {
+  const params = new URLSearchParams({
+    hospital_id: hospitalId,
+    year: String(year),
+  });
+  if (quarter !== undefined) {
+    params.append("quarter", String(quarter));
+  }
+
+  const data = await getJson(
+    `${API_BASE_URL}/api/fraud-report?${params.toString()}`
+  );
+
+  // risk_distribution can be an object {High, Medium, Low}
+  // or an array of {name, value}. Handle both.
+  let riskDistribution = data.risk_distribution || {};
+  if (Array.isArray(riskDistribution)) {
+    const obj = {};
+    for (const item of riskDistribution) {
+      if (!item) continue;
+      const name = (item.name || "").toLowerCase();
+      if (name.includes("high")) obj.High = item.value;
+      else if (name.includes("medium")) obj.Medium = item.value;
+      else if (name.includes("low")) obj.Low = item.value;
+    }
+    riskDistribution = obj;
+  }
 
   return {
     hospitalId: data.hospital_id,
@@ -55,11 +69,35 @@ export async function runFraudCheck({ hospitalId, year, quarter }) {
     lowRiskCases: data.low_risk_cases,
     controlledDrugUse: data.controlled_drug_use,
     activeAlerts: data.active_alerts,
-    hospitalRiskLevel: data.hospital_risk_level,
+    hospitalRiskLevel: data.risk_level || data.hospital_risk_level,
     summary: data.summary || "",
-    trend: data.trend_last_3_months || [],
+    trend: data.fraud_trend_last_3_months || data.trend_last_3_months || [],
     topSuspiciousDrugs: data.top_suspicious_drugs || [],
-    riskDistribution:
-      data.risk_distribution || { High: 0, Medium: 0, Low: 0 },
+    riskDistribution,
   };
+}
+
+// ---------------- Top suspicious cases ----------------
+
+export async function getTopCases({
+  hospitalId,
+  year,
+  quarter,
+  limit = 8,
+}) {
+  const params = new URLSearchParams({
+    hospital_id: hospitalId,
+    year: String(year),
+    limit: String(limit),
+  });
+  if (quarter !== undefined) {
+    params.append("quarter", String(quarter));
+  }
+
+  const data = await getJson(
+    `${API_BASE_URL}/api/top-cases?${params.toString()}`
+  );
+
+  // backend returns: { hospital_id, year, quarter, cases: [...] }
+  return data.cases || [];
 }

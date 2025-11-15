@@ -265,3 +265,86 @@ select {
   color: #6b7280;
 }
 
+/* Header row in Screen 2 */
+.results-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+/* Top Cases toggle button */
+.topcases-btn {
+  border: 1px solid #2563eb;
+  background-color: white;
+  color: #2563eb;
+  padding: 8px 18px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.15);
+  transition: background-color 0.2s ease, color 0.2s ease,
+    box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.topcases-btn:hover {
+  background-color: #eff6ff;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+  transform: translateY(-1px);
+}
+
+.topcases-btn.active {
+  background-color: #2563eb;
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+}
+
+/* Bottom action bar */
+.bottom-actions {
+  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  padding-bottom: 40px;
+}
+
+/* Export button */
+.export-button {
+  background-color: #22c55e;
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease,
+    transform 0.1s ease;
+}
+
+.export-button:hover {
+  background-color: #16a34a;
+  box-shadow: 0 4px 10px rgba(22, 163, 74, 0.35);
+  transform: translateY(-1px);
+}
+
+/* Back button */
+.back-button {
+  background-color: #e5e7eb;
+  color: #111827;
+  border: none;
+  padding: 12px 30px;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, box-shadow 0.2s ease,
+    transform 0.1s ease;
+}
+
+.back-button:hover {
+  background-color: #d1d5db;
+  box-shadow: 0 4px 10px rgba(55, 65, 81, 0.25);
+  transform: translateY(-1px);
+}
